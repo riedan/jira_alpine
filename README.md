@@ -6,4 +6,4 @@ Available from docker hub as [riedan/openjdk_alpine](https://hub.docker.com/r/ri
 
 ## Usage
 
-    docker run --rm riedan/openjdk_alpine
+    docker run riedan/openjdk_alpine
