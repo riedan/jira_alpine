@@ -20,7 +20,7 @@ RUN set -eux; \
 # Install Atlassian JIRA and helper tools and setup initial home
 # directory structure.
 RUN set -x \
-    && apk add --no-cache curl xmlstarlet bash ttf-dejavu libc6-compat dos2unix \
+    && apk add --no-cache curl xmlstarlet bash ttf-dejavu libc6-compat dos2unix tomcat-native \
     && mkdir -p                				"${JIRA_HOME}" \
     && mkdir -p                				"${JIRA_HOME}/caches/indexes" \
     && chmod -R 700            				"${JIRA_HOME}" \
@@ -58,8 +58,14 @@ RUN ["chmod", "+x", "/docker-entrypoint.sh"]
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
+
 # 
 USER ${JIRA_USER}:${JIRA_GROUP}
+# Set volume mount points for installation and home directory. Changes to the
+# home directory needs to be persisted as well as parts of the installation
+# directory due to eg. logs.
+VOLUME ["/var/atlassian/jira", "/opt/atlassian/jira/logs"]
+
 # Set the default working directory as the installation directory.
 WORKDIR /var/atlassian/jira
 

@@ -34,6 +34,10 @@ fi
 if [ "${JIRA_USER}" != "jira" ]; then
   getent group ${JIRA_GROUP} || addgroup -S ${JIRA_GROUP}
   getent passwd ${JIRA_USER} || adduser -S ${JIRA_USER} ${JIRA_GROUP}
+  mkdir -p "${JIRA_HOME}" 
+  mkdir -p "${JIRA_HOME}/caches/indexes" 
+  chmod -R 700 "${JIRA_HOME}" 
+  chown -R ${JIRA_USER}:${JIRA_GROUP}  "${JIRA_HOME}" 
   sed -i "s/JIRA=.*\n/JIRA=${JIRA_USER}\n/g" "${JIRA_INSTALL}/bin/user.sh" 
 fi  
    
