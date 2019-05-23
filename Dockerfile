@@ -15,7 +15,7 @@ ENV JIRA_SESSION_TIMEOUT 60
 #create user if not exist
 RUN set -eux; \
 	getent group ${JIRA_GROUP} || addgroup -S ${JIRA_GROUP}; \
-	getent passwd ${JIRA_USER} || adduser -S ${JIRA_USER} ${JIRA_GROUP};
+	getent passwd ${JIRA_USER} || adduser -S ${JIRA_USER}  -G ${JIRA_GROUP} -s "/bin/sh";
 
 # Install Atlassian JIRA and helper tools and setup initial home
 # directory structure.
@@ -41,20 +41,20 @@ RUN set -x \
     && echo -e                 				"\njira.home=$JIRA_HOME" >> "${JIRA_INSTALL}/atlassian-jira/WEB-INF/classes/jira-application.properties" \
     && touch -d "@0"           				"${JIRA_INSTALL}/conf/server.xml" \
     && sed -i								"s/<session-timeout>.*<\/session-timeout>/<session-timeout>${JIRA_SESSION_TIMEOUT}<\/session-timeout>/g" "${JIRA_INSTALL}/atlassian-jira/WEB-INF/web.xml" \
-	&& sed -i 								"s/JIRA=.*\n/JIRA=${JIRA_USER}\n/g" "${JIRA_INSTALL}/bin/user.sh" \
-	&& sed -i 								"s/JVM_MINIMUM_MEMORY=.*\n/JVM_MINIMUM_MEMORY=${JVM_MINIMUM_MEMORY}\n/g" "${JIRA_INSTALL}/bin/user.sh" \
-	&& sed -i 								"s/JVM_MAXIMUM_MEMORY=.*\n/JVM_MAXIMUM_MEMORY=${JVM_MAXIMUM_MEMORY}\n/g" "${JIRA_INSTALL}/bin/user.sh" 
+	&& sed -i 								"s/JVM_MINIMUM_MEMORY=.*$/JVM_MINIMUM_MEMORY=${JVM_MINIMUM_MEMORY}/g" "${JIRA_INSTALL}/bin/setenv.sh" \
+	&& sed -i 								"s/JVM_MAXIMUM_MEMORY=.*$/JVM_MAXIMUM_MEMORY=${JVM_MAXIMUM_MEMORY}/g" "${JIRA_INSTALL}/bin/setenv.sh" 
  
 
 # Expose default HTTP connector port.
 EXPOSE 8080
 
 
-COPY "docker-entrypoint.sh" "/"
+COPY "script/docker-entrypoint.sh" "/"
 RUN dos2unix /docker-entrypoint.sh && apk del dos2unix
-
 #make sure the file can be executed
 RUN ["chmod", "+x", "/docker-entrypoint.sh"]
+
+COPY "conf/dbconfig.xml" "${JIRA_INSTALL}"
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
@@ -66,5 +66,6 @@ VOLUME ["/var/atlassian/jira", "/opt/atlassian/jira/logs"]
 # Set the default working directory as the installation directory.
 WORKDIR /var/atlassian/jira
 
+
 # Run Atlassian JIRA as a foreground process by default.
-CMD ["/opt/atlassian/jira/bin/start-jira.sh", "-fg"]
+CMD ["sh", "-c", "su - $JIRA_USER -c \"/opt/atlassian/jira/bin/start-jira.sh -fg\"" ]

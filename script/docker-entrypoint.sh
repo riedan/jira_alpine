@@ -23,27 +23,38 @@ if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
 fi
 
 if [ "${JVM_MINIMUM_MEMORY}" != "2G" ]; then
-	sed -i 	"s/JVM_MINIMUM_MEMORY=.*\n/JVM_MINIMUM_MEMORY=${JVM_MINIMUM_MEMORY}\n/g" "${JIRA_INSTALL}/bin/user.sh"
+	sed -i 	"s/JVM_MINIMUM_MEMORY=.*$/JVM_MINIMUM_MEMORY=${JVM_MINIMUM_MEMORY}/g" "${JIRA_INSTALL}/bin/setenv.sh"
 
 fi 
  
 if [ "${JVM_MAXIMUM_MEMORY}" != "10G" ]; then
-  sed -i "s/JVM_MAXIMUM_MEMORY=.*\n/JVM_MAXIMUM_MEMORY=${JVM_MAXIMUM_MEMORY}\n/g" "${JIRA_INSTALL}/bin/user.sh" 
+  sed -i "s/JVM_MAXIMUM_MEMORY=.*$/JVM_MAXIMUM_MEMORY=${JVM_MAXIMUM_MEMORY}/g" "${JIRA_INSTALL}/bin/setenv.sh" 
 fi 
 
 if [ ${JIRA_USER} != "jira" ]; then
   getent group ${JIRA_GROUP} || addgroup -S ${JIRA_GROUP}
-  getent passwd ${JIRA_USER} || adduser -S ${JIRA_USER} ${JIRA_GROUP}
+  getent passwd ${JIRA_USER} || adduser -S ${JIRA_USER}  -G ${JIRA_GROUP} -s "/bin/bash" -h "${JIRA_HOME}"
   mkdir -p "${JIRA_HOME}" 
   mkdir -p "${JIRA_HOME}/caches/indexes" 
-  chmod -R 700 "${JIRA_HOME}" 
-  chown -R ${JIRA_USER}:${JIRA_GROUP}  "${JIRA_HOME}" 
-  sed -i "s/JIRA=.*\n/JIRA=${JIRA_USER}\n/g" "${JIRA_INSTALL}/bin/user.sh" 
+  chown -R ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}"
+  chown -R ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/conf"
+  chown -R ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/logs"
+  chown -R ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/temp"
+  chown -R ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/work"
 fi  
    
 if [ "${JIRA_SESSION_TIMEOUT}" -ne 60 ]; then
   sed -i "s/<session-timeout>.*<\/session-timeout>/<session-timeout>${JIRA_SESSION_TIMEOUT}<\/session-timeout>/g" "${JIRA_INSTALL}/atlassian-jira/WEB-INF/web.xml"
 fi
-			
 
+if [ -n "${JIRA_DB_USERNAME}" -a -n "${JIRA_DB_PASSWORD}" ]; then
+
+	cp "${JIRA_INSTALL}/dbconfig.xml"  "${JIRA_HOME}/dbconfig.xml"
+	chmod 700 "${JIRA_HOME}/dbconfig.xml"
+	chown -R ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/dbconfig.xml"
+	xmlstarlet ed --inplace -u '/jira-database-config/jdbc-datasource/username' -v "${JIRA_DB_USERNAME}" "${JIRA_HOME}/dbconfig.xml" 
+	xmlstarlet ed --inplace -u '/jira-database-config/jdbc-datasource/password' -v "${JIRA_DB_PASSWORD}" "${JIRA_HOME}/dbconfig.xml"
+	xmlstarlet ed --inplace -u '/jira-database-config/jdbc-datasource/url' -v "jdbc:postgresql://${JIRA_DB_HOSTNAME}:${JIRA_DB_PORT}/${JIRA_DB_SCHEMA}" "${JIRA_HOME}/dbconfig.xml"
+fi
+			
 exec "$@"
