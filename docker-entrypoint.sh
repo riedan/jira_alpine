@@ -22,25 +22,24 @@ if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
   fi
 fi
 
-if [  "${JVM_MINIMUM_MEMORY}" !=  "2G"]; then
+if [ "${JVM_MINIMUM_MEMORY}" != "2G" ]; then
 	sed -i 	"s/JVM_MINIMUM_MEMORY=.*\n/JVM_MINIMUM_MEMORY=${JVM_MINIMUM_MEMORY}\n/g" "${JIRA_INSTALL}/bin/user.sh"
 
 fi 
  
-if [  "${JVM_MAXIMUM_MEMORY}" !=  "10G"]; then
+if [ "${JVM_MAXIMUM_MEMORY}" != "10G" ]; then
   sed -i "s/JVM_MAXIMUM_MEMORY=.*\n/JVM_MAXIMUM_MEMORY=${JVM_MAXIMUM_MEMORY}\n/g" "${JIRA_INSTALL}/bin/user.sh" 
 fi 
 
-if [  "${JIRA_USER}" !=  "jira"]; then
+if [ "${JIRA_USER}" != "jira" ]; then
   getent group ${JIRA_GROUP} || addgroup -S ${JIRA_GROUP}
   getent passwd ${JIRA_USER} || adduser -S ${JIRA_USER} ${JIRA_GROUP}
   sed -i "s/JIRA=.*\n/JIRA=${JIRA_USER}\n/g" "${JIRA_INSTALL}/bin/user.sh" 
 fi  
    
-if [ "${JIRA_SESSION_TIMEOUT}" !=  60]; then
+if [ "${JIRA_SESSION_TIMEOUT}" -ne 60 ]; then
   sed -i "s/<session-timeout>.*<\/session-timeout>/<session-timeout>${JIRA_SESSION_TIMEOUT}<\/session-timeout>/g" "${JIRA_INSTALL}/atlassian-jira/WEB-INF/web.xml"
 fi
 			
-
 
 exec "$@"

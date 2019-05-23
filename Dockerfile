@@ -20,7 +20,7 @@ RUN set -eux; \
 # Install Atlassian JIRA and helper tools and setup initial home
 # directory structure.
 RUN set -x \
-    && apk add --no-cache curl xmlstarlet bash ttf-dejavu libc6-compat \
+    && apk add --no-cache curl xmlstarlet bash ttf-dejavu libc6-compat dos2unix \
     && mkdir -p                				"${JIRA_HOME}" \
     && mkdir -p                				"${JIRA_HOME}/caches/indexes" \
     && chmod -R 700            				"${JIRA_HOME}" \
@@ -46,16 +46,12 @@ RUN set -x \
 	&& sed -i 								"s/JVM_MAXIMUM_MEMORY=.*\n/JVM_MAXIMUM_MEMORY=${JVM_MAXIMUM_MEMORY}\n/g" "${JIRA_INSTALL}/bin/user.sh" 
  
 
-
-
-
-
-
 # Expose default HTTP connector port.
 EXPOSE 8080
 
 
-COPY "script/docker-entrypoint.sh" "/"
+COPY "docker-entrypoint.sh" "/"
+RUN dos2unix /docker-entrypoint.sh && apk del dos2unix
 
 #make sure the file can be executed
 RUN ["chmod", "+x", "/docker-entrypoint.sh"]
