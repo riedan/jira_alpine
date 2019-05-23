@@ -31,7 +31,7 @@ if [ "${JVM_MAXIMUM_MEMORY}" != "10G" ]; then
   sed -i "s/JVM_MAXIMUM_MEMORY=.*\n/JVM_MAXIMUM_MEMORY=${JVM_MAXIMUM_MEMORY}\n/g" "${JIRA_INSTALL}/bin/user.sh" 
 fi 
 
-if [ "${JIRA_USER}" != "jira" ]; then
+if [ ${JIRA_USER} != "jira" ]; then
   getent group ${JIRA_GROUP} || addgroup -S ${JIRA_GROUP}
   getent passwd ${JIRA_USER} || adduser -S ${JIRA_USER} ${JIRA_GROUP}
   mkdir -p "${JIRA_HOME}" 
