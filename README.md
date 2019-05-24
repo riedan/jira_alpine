@@ -31,9 +31,8 @@ You can configure a small set of things by supplying the following environment v
 | JIRA_DB_HOSTNAME       | TODO |
 | JIRA_DB_PORT           | TODO |
 | JIRA_DB_SCHEMA         | TODO |
-| JIRA_DB_PORT           | TODO |
 | JIRA_CA_P12            | TODO |
 | JIRA_P12_ALIAS         | TODO |
-| $JIRA_P12_ST_PASS      | TODO |
+| JIRA_P12_ST_PASS       | TODO |
 | JIRA_SSL_PROTOCOL      | TODO |
 | JIRA_SSL_ENABLE_PROTOCOLS | TODO |
