@@ -56,5 +56,10 @@ if [ -n "${JIRA_DB_USERNAME}" -a -n "${JIRA_DB_PASSWORD}" ]; then
 	xmlstarlet ed --inplace -u '/jira-database-config/jdbc-datasource/password' -v "${JIRA_DB_PASSWORD}" "${JIRA_HOME}/dbconfig.xml"
 	xmlstarlet ed --inplace -u '/jira-database-config/jdbc-datasource/url' -v "jdbc:postgresql://${JIRA_DB_HOSTNAME}:${JIRA_DB_PORT}/${JIRA_DB_SCHEMA}" "${JIRA_HOME}/dbconfig.xml"
 fi
-			
+
+if [ -n "${JIRA_CA_P12}" ]; then
+
+
+fi
+
 exec "$@"
