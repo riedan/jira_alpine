@@ -5,9 +5,9 @@ ENV JIRA_HOME     /var/atlassian/jira
 ENV JIRA_INSTALL  /opt/atlassian/jira
 ENV JIRA_VERSION  8.2.0
 
-ENV JIRA_USER jira 
-ENV JIRA_GROUP jira 
-ENV JVM_MINIMUM_MEMORY 2G 
+ENV JIRA_USER jira
+ENV JIRA_GROUP jira
+ENV JVM_MINIMUM_MEMORY 2G
 ENV JVM_MAXIMUM_MEMORY 10G
 ENV JIRA_SESSION_TIMEOUT 60
 
@@ -42,12 +42,12 @@ RUN set -x \
     && touch -d "@0"           				"${JIRA_INSTALL}/conf/server.xml" \
     && sed -i								"s/<session-timeout>.*<\/session-timeout>/<session-timeout>${JIRA_SESSION_TIMEOUT}<\/session-timeout>/g" "${JIRA_INSTALL}/atlassian-jira/WEB-INF/web.xml" \
 	&& sed -i 								"s/JVM_MINIMUM_MEMORY=.*$/JVM_MINIMUM_MEMORY=${JVM_MINIMUM_MEMORY}/g" "${JIRA_INSTALL}/bin/setenv.sh" \
-	&& sed -i 								"s/JVM_MAXIMUM_MEMORY=.*$/JVM_MAXIMUM_MEMORY=${JVM_MAXIMUM_MEMORY}/g" "${JIRA_INSTALL}/bin/setenv.sh" 
- 
+	&& sed -i 								"s/JVM_MAXIMUM_MEMORY=.*$/JVM_MAXIMUM_MEMORY=${JVM_MAXIMUM_MEMORY}/g" "${JIRA_INSTALL}/bin/setenv.sh"
+
 
 # Expose default HTTP connector port.
 EXPOSE 8080
-
+EXPOSE 8443
 
 COPY "script/docker-entrypoint.sh" "/"
 RUN dos2unix /docker-entrypoint.sh && apk del dos2unix
