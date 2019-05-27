@@ -5,20 +5,20 @@
 # perform modifications to the configuration file.
 if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
   if [ -n "${X_PROXY_NAME}" ]; then
-    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyName" --value "${X_PROXY_NAME}" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyName" --value "${X_PROXY_NAME}" "${JIRA_INSTALL}/conf/server.xml"
   fi
   if [ -n "${X_PROXY_PORT}" ]; then
-    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyPort" --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyPort" --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
   fi
   if [ -n "${X_PROXY_SCHEME}" ]; then
-    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "scheme" --value "${X_PROXY_SCHEME}" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -L --insert '//Connector[@port="8080"]' --type "attr" --name "scheme" --value "${X_PROXY_SCHEME}" "${JIRA_INSTALL}/conf/server.xml"
   fi
   if [ "${X_PROXY_SCHEME}" = "https" ]; then
-    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "secure" --value "true" "${JIRA_INSTALL}/conf/server.xml"
-    xmlstarlet ed -P -S -L --update '//Connector[@port="8080"]/@redirectPort' --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -L --insert '//Connector[@port="8080"]' --type "attr" --name "secure" --value "true" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -L --update '//Connector[@port="8080"]/@redirectPort' --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
   fi
   if [ -n "${X_PATH}" ]; then
-    xmlstarlet ed -P -S -L --update '//Context/@path' --value "${X_PATH}" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -L --update '//Context/@path' --value "${X_PATH}" "${JIRA_INSTALL}/conf/server.xml"
   fi
 
   if [ -n "${JIRA_CA_P12}" ]; then
@@ -35,26 +35,42 @@ if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
     chmod 700 "${JIRA_INSTALL}/conf/jvpass"
 
 
-
-    xmlstarlet ed -P -S -L -s '/Server/Service' -t elem -n ConnectorTMP -v "" \
-        -i //ConnectorTMP -t attr -n "protocol" -v "org.apache.coyote.http11.Http11Protocol" \
+     # from https://confluence.atlassian.com/adminjiraserver/running-jira-applications-over-ssl-or-https-938847764.html
+    xmlstarlet ed -L -s '/Server/Service' -t elem -n ConnectorTMP -v "" \
+        -i //ConnectorTMP -t attr -n "protocol" -v "org.apache.coyote.http11.Http11NioProtocol" \
         -i //ConnectorTMP -t attr -n "maxHttpHeaderSize" -v "8192" \
         -i //ConnectorTMP -t attr -n "acceptCount" -v "100" \
         -i //ConnectorTMP -t attr -n "enableLookups" -v "false" \
         -i //ConnectorTMP -t attr -n "disableUploadTimeout" -v "true" \
         -i //ConnectorTMP -t attr -n "port" -v "8443" \
+        -i //ConnectorTMP -t attr -n "scheme" -v "https" \
         -i //ConnectorTMP -t attr -n "maxThreads" -v "150" \
         -i //ConnectorTMP -t attr -n "secure" -v "true" \
         -i //ConnectorTMP -t attr -n "SSLEnabled" -v "true" \
         -i //ConnectorTMP -t attr -n "keystoreFile" -v "${JIRA_INSTALL}/conf/tomcat-keystore.jks" \
         -i //ConnectorTMP -t attr -n "keystorePass" -v "$JKPASS" \
         -i //ConnectorTMP -t attr -n "clientAuth" -v "false" \
-        -i //ConnectorTMP -t attr -n "sslProtocol" -v "${JIRA_SSL_PROTOCOL}" \
         -i //ConnectorTMP -t attr -n "sslEnabledProtocols" -v "$JIRA_SSL_ENABLE_PROTOCOLS" \
         -i //ConnectorTMP -t attr -n "useBodyEncodingForURI" -v "true" \
         -i //ConnectorTMP -t attr -n "keystoreType" -v "JKS" \
         -r //ConnectorTMP -v Connector \
         "${JIRA_INSTALL}/conf/server.xml"
+
+     xmlstarlet ed -L -i '//Connector[@port="8080"]' --type "attr" --name "redirectPort" --value "8443" "${JIRA_INSTALL}/conf/server.xml"
+
+    xmlstarlet ed -L -N x="http://java.sun.com/xml/ns/javaee" -s "/x:web-app" -t elem -n "security-constraintTMP" -v "" \
+        -s "/x:web-app/security-constraintTMP" -t elem -n "web-resource-collectionTMP" -v "" \
+        -s "///web-resource-collectionTMP" -t elem -n "web-resource-name" -v "all-except-attachments" \
+        -s "///web-resource-collectionTMP" -t elem -n "url-pattern" -v "*.jsp" \
+        -s "///web-resource-collectionTMP" -t elem -n "url-pattern" -v "*.jspa" \
+        -s "///web-resource-collectionTMP" -t elem -n "url-pattern" -v "/browse/*" \
+        -s "///web-resource-collectionTMP" -t elem -n "url-pattern" -v "/issues/*" \
+        -s "/x:web-app/security-constraintTMP" -t elem -n "user-data-constraintTMP" -v "" \
+        -s "///user-data-constraintTMP" -t elem -n "transport-guarantee" -v "CONFIDENTIAL" \
+        -r "//security-constraintTMP" -v "security-constraint" \
+        -r "///web-resource-collectionTMP" -v "web-resource-collection" \
+        -r "///user-data-constraintTMP" -v "user-data-constraint" \
+        "${JIRA_INSTALL}/atlassian-jira/WEB-INF/web.xml"
 
     unset JIRA_P12_ST_PASS
     unset JIRA_CA_P12
@@ -94,9 +110,9 @@ if [ -n "${JIRA_DB_USERNAME}" -a -n "${JIRA_DB_PASSWORD}" ]; then
 	cp "${JIRA_INSTALL}/dbconfig.xml"  "${JIRA_HOME}/dbconfig.xml"
 	chmod 700 "${JIRA_HOME}/dbconfig.xml"
 	chown -R ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/dbconfig.xml"
-	xmlstarlet ed --inplace -u '/jira-database-config/jdbc-datasource/username' -v "${JIRA_DB_USERNAME}" "${JIRA_HOME}/dbconfig.xml" 
-	xmlstarlet ed --inplace -u '/jira-database-config/jdbc-datasource/password' -v "${JIRA_DB_PASSWORD}" "${JIRA_HOME}/dbconfig.xml"
-	xmlstarlet ed --inplace -u '/jira-database-config/jdbc-datasource/url' -v "jdbc:postgresql://${JIRA_DB_HOSTNAME}:${JIRA_DB_PORT}/${JIRA_DB_SCHEMA}" "${JIRA_HOME}/dbconfig.xml"
+	xmlstarlet ed -L -u '/jira-database-config/jdbc-datasource/username' -v "${JIRA_DB_USERNAME}" "${JIRA_HOME}/dbconfig.xml"
+	xmlstarlet ed -L -u '/jira-database-config/jdbc-datasource/password' -v "${JIRA_DB_PASSWORD}" "${JIRA_HOME}/dbconfig.xml"
+	xmlstarlet ed -L -u '/jira-database-config/jdbc-datasource/url' -v "jdbc:postgresql://${JIRA_DB_HOSTNAME}:${JIRA_DB_PORT}/${JIRA_DB_SCHEMA}" "${JIRA_HOME}/dbconfig.xml"
 fi
 
 

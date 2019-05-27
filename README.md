@@ -34,5 +34,4 @@ You can configure a small set of things by supplying the following environment v
 | JIRA_CA_P12            | TODO |
 | JIRA_P12_ALIAS         | TODO |
 | JIRA_P12_ST_PASS       | TODO |
-| JIRA_SSL_PROTOCOL      | TODO |
 | JIRA_SSL_ENABLE_PROTOCOLS | TODO |
