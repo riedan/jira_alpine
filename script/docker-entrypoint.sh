@@ -5,20 +5,20 @@
 # perform modifications to the configuration file.
 if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
   if [ -n "${X_PROXY_NAME}" ]; then
-    xmlstarlet ed -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyName" --value "${X_PROXY_NAME}" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyName" --value "${X_PROXY_NAME}" "${JIRA_INSTALL}/conf/server.xml"
   fi
   if [ -n "${X_PROXY_PORT}" ]; then
-    xmlstarlet ed -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyPort" --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyPort" --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
   fi
   if [ -n "${X_PROXY_SCHEME}" ]; then
-    xmlstarlet ed -L --insert '//Connector[@port="8080"]' --type "attr" --name "scheme" --value "${X_PROXY_SCHEME}" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "scheme" --value "${X_PROXY_SCHEME}" "${JIRA_INSTALL}/conf/server.xml"
   fi
   if [ "${X_PROXY_SCHEME}" = "https" ]; then
-    xmlstarlet ed -L --insert '//Connector[@port="8080"]' --type "attr" --name "secure" --value "true" "${JIRA_INSTALL}/conf/server.xml"
-    xmlstarlet ed -L --update '//Connector[@port="8080"]/@redirectPort' --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "secure" --value "true" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -P -S -L --update '//Connector[@port="8080"]/@redirectPort' --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
   fi
   if [ -n "${X_PATH}" ]; then
-    xmlstarlet ed -L --update '//Context/@path' --value "${X_PATH}" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -P -S -L --update '//Context/@path' --value "${X_PATH}" "${JIRA_INSTALL}/conf/server.xml"
   fi
 
   if [ -n "${JIRA_CA_P12}" ]; then
@@ -36,7 +36,7 @@ if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
 
 
      # from https://confluence.atlassian.com/adminjiraserver/running-jira-applications-over-ssl-or-https-938847764.html
-    xmlstarlet ed -L -s '/Server/Service' -t elem -n ConnectorTMP -v "" \
+    xmlstarlet ed -P -S -L -s '/Server/Service' -t elem -n ConnectorTMP -v "" \
         -i //ConnectorTMP -t attr -n "protocol" -v "org.apache.coyote.http11.Http11NioProtocol" \
         -i //ConnectorTMP -t attr -n "maxHttpHeaderSize" -v "8192" \
         -i //ConnectorTMP -t attr -n "acceptCount" -v "100" \
@@ -56,9 +56,9 @@ if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
         -r //ConnectorTMP -v Connector \
         "${JIRA_INSTALL}/conf/server.xml"
 
-     xmlstarlet ed -L --update '//Connector[@port="8080"]' --type "attr" --name "redirectPort" --value "8443" "${JIRA_INSTALL}/conf/server.xml"
+     xmlstarlet ed -P -S -L --update '//Connector[@port="8080"]' --type "attr" --name "redirectPort" --value "8443" "${JIRA_INSTALL}/conf/server.xml"
 
-    xmlstarlet ed -L -N x="http://java.sun.com/xml/ns/javaee" -s "/x:web-app" -t elem -n "security-constraintTMP" -v "" \
+    xmlstarlet ed -P -S -L -N x="http://java.sun.com/xml/ns/javaee" -s "/x:web-app" -t elem -n "security-constraintTMP" -v "" \
         -s "/x:web-app/security-constraintTMP" -t elem -n "web-resource-collectionTMP" -v "" \
         -s "///web-resource-collectionTMP" -t elem -n "web-resource-name" -v "all-except-attachments" \
         -s "///web-resource-collectionTMP" -t elem -n "url-pattern" -v "*.jsp" \
