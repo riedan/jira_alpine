@@ -57,6 +57,8 @@ if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
         "${JIRA_INSTALL}/conf/server.xml"
 
      xmlstarlet ed -P -S -L --update '//Connector[@port="8080"]' --type "attr" --name "redirectPort" --value "8443" "${JIRA_INSTALL}/conf/server.xml"
+     xmlstarlet ed -P -S -L --update '//Connector[@port="8080"]' --type "attr" --name "relaxedQueryChars" --value "[]|" "${JIRA_INSTALL}/conf/server.xml"
+     xmlstarlet ed -P -S -L --update '//Connector[@port="8080"]' --type "attr" --name "relaxedPathChars" --value "[]|{}^&#x5c;&#x60;&quot;&lt;&gt;" "${JIRA_INSTALL}/conf/server.xml"
 
     xmlstarlet ed -P -S -L -N x="http://java.sun.com/xml/ns/javaee" -s "/x:web-app" -t elem -n "security-constraintTMP" -v "" \
         -s "/x:web-app/security-constraintTMP" -t elem -n "web-resource-collectionTMP" -v "" \
