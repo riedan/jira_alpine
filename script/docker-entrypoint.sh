@@ -58,11 +58,11 @@ if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
         -r //ConnectorTMP -v Connector \
         "${JIRA_INSTALL}/conf/server.xml"
 
-     xmlstarlet ed -P -S -L -u '//Connector[@port="8080"]/@redirectPort'  -v "8443" "${JIRA_INSTALL}/conf/server.xml"
-     xmlstarlet ed -P -S -L -u '//Connector[@port="8080"]/@relaxedQueryChars'  --value "[]|" "${JIRA_INSTALL}/conf/server.xml"
-     xmlstarlet ed -P -S -L -u '//Connector[@port="8080"]/@relaxedPathChars' --value "[]|{}^&#x5c;&#x60;&quot;&lt;&gt;" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -P -S -L -u '//Connector[@port="8080"]/@redirectPort'  -v "8443" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -P -S -L -u '//Connector[@port="8080"]/@relaxedQueryChars'  --value "[]|" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -P -S -L -u '//Connector[@port="8080"]/@relaxedPathChars' --value "[]|{}^&#x5c;&#x60;&quot;&lt;&gt;" "${JIRA_INSTALL}/conf/server.xml"
 
-     #sed 's/\&amp;/\&/g' > "${JIRA_INSTALL}/conf/server.xml"
+    sed -i 's/\&amp;/\&/g' "${JIRA_INSTALL}/conf/server.xml"
 
     xmlstarlet ed -P -S -L -N x="http://java.sun.com/xml/ns/javaee" -s "/x:web-app" -t elem -n "security-constraintTMP" -v "" \
         -s "/x:web-app/security-constraintTMP" -t elem -n "web-resource-collectionTMP" -v "" \
