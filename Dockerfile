@@ -52,11 +52,18 @@ EXPOSE 8080
 EXPOSE 8443
 
 COPY "script/docker-entrypoint.sh" "/"
+COPY "conf/dbconfig.xml" "${JIRA_INSTALL}"
+COPY "conf/server.xml" "${JIRA_INSTALL}/conf/server.xml.ssl"
+
+RUN dos2unix "${JIRA_INSTALL}/dbconfig.xml"
+RUN dos2unix "${JIRA_INSTALL}/conf/server.xml.ssl"
 RUN dos2unix /docker-entrypoint.sh && apk del dos2unix
+
 #make sure the file can be executed
 RUN ["chmod", "+x", "/docker-entrypoint.sh"]
 
-COPY "conf/dbconfig.xml" "${JIRA_INSTALL}"
+
+
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 

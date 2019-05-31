@@ -28,41 +28,18 @@ if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
     JKPASS=$(date +%s | sha256sum | base64 | head -c 32)
     echo $JKPASS > "${JIRA_INSTALL}/conf/jvpass"
 
+	cp "${JIRA_INSTALL}/conf/server.xml" "${JIRA_INSTALL}/conf/server.xml.backup"
+	cp "${JIRA_INSTALL}/conf/server.xml.ssl" "${JIRA_INSTALL}/conf/server.xml"
+	
+	
     ${JAVA_HOME}/bin/keytool -importkeystore -srckeystore "${JIRA_INSTALL}/conf/JIRA.p12" -srcstoretype pkcs12 -srcalias "${JIRA_P12_ALIAS}" -srcstorepass "$JIRA_P12_ST_PASS" -destkeystore "${JIRA_INSTALL}/conf/tomcat-keystore.jks" -deststoretype jks -deststorepass "$JKPASS" -destkeypass "$JKPASS" -destalias host_identity
     chown ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/conf/tomcat-keystore.jks"
     chown ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/conf/JIRA.p12"
     chown ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/conf/jvpass"
     chmod 700 "${JIRA_INSTALL}/conf/jvpass"
 
-
-     # from https://confluence.atlassian.com/adminjiraserver/running-jira-applications-over-ssl-or-https-938847764.html
-    xmlstarlet ed -P -S -L -s '/Server/Service' -t elem -n ConnectorTMP -v "" \
-        -i //ConnectorTMP -t attr -n "protocol" -v "org.apache.coyote.http11.Http11NioProtocol" \
-        -i //ConnectorTMP -t attr -n "maxHttpHeaderSize" -v "8192" \
-        -i //ConnectorTMP -t attr -n "acceptCount" -v "100" \
-        -i //ConnectorTMP -t attr -n "enableLookups" -v "false" \
-        -i //ConnectorTMP -t attr -n "disableUploadTimeout" -v "true" \
-        -i //ConnectorTMP -t attr -n "port" -v "8443" \
-        -i //ConnectorTMP -t attr -n "scheme" -v "https" \
-        -i //ConnectorTMP -t attr -n "maxThreads" -v "150" \
-        -i //ConnectorTMP -t attr -n "secure" -v "true" \
-        -i //ConnectorTMP -t attr -n "SSLEnabled" -v "true" \
-        -i //ConnectorTMP -t attr -n "keystoreFile" -v "${JIRA_INSTALL}/conf/tomcat-keystore.jks" \
-        -i //ConnectorTMP -t attr -n "keystorePass" -v "$JKPASS" \
-        -i //ConnectorTMP -t attr -n "clientAuth" -v "false" \
-        -i //ConnectorTMP -t attr -n "sslEnabledProtocols" -v "$JIRA_SSL_ENABLE_PROTOCOLS" \
-        -i //ConnectorTMP -t attr -n "useBodyEncodingForURI" -v "true" \
-        -i //ConnectorTMP -t attr -n "keystoreType" -v "JKS" \
-        -i //ConnectorTMP -t attr -n "relaxedQueryChars" -v "[]|" \
-        -i //ConnectorTMP -t attr -n "relaxedPathChars" -v "[]|{}^&#x5c;&#x60;&quot;&lt;&gt;" \
-        -r //ConnectorTMP -v Connector \
-        "${JIRA_INSTALL}/conf/server.xml"
-
-    xmlstarlet ed -P -S -L -u '//Connector[@port="8080"]/@redirectPort'  -v "8443" "${JIRA_INSTALL}/conf/server.xml"
-    xmlstarlet ed -P -S -L -u '//Connector[@port="8080"]/@relaxedQueryChars'  --value "[]|" "${JIRA_INSTALL}/conf/server.xml"
-    xmlstarlet ed -P -S -L -u '//Connector[@port="8080"]/@relaxedPathChars' --value "[]|{}^&#x5c;&#x60;&quot;&lt;&gt;" "${JIRA_INSTALL}/conf/server.xml"
-
-    sed -i 's/\&amp;/\&/g' "${JIRA_INSTALL}/conf/server.xml"
+	sed -i "s|pathKeystoreFile|${JIRA_INSTALL}/conf/tomcat-keystore.jks|g" "${JIRA_INSTALL}/conf/server.xml"
+	sed -i "s/changeit/$JKPASS/g" "${JIRA_INSTALL}/conf/server.xml"
 
     xmlstarlet ed -P -S -L -N x="http://java.sun.com/xml/ns/javaee" -s "/x:web-app" -t elem -n "security-constraintTMP" -v "" \
         -s "/x:web-app/security-constraintTMP" -t elem -n "web-resource-collectionTMP" -v "" \
