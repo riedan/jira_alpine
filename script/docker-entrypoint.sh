@@ -4,22 +4,6 @@
 # Docker image. If the file has been changed the entrypoint script will not
 # perform modifications to the configuration file.
 if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
-  if [ -n "${X_PROXY_NAME}" ]; then
-    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyName" --value "${X_PROXY_NAME}" "${JIRA_INSTALL}/conf/server.xml"
-  fi
-  if [ -n "${X_PROXY_PORT}" ]; then
-    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyPort" --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
-  fi
-  if [ -n "${X_PROXY_SCHEME}" ]; then
-    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "scheme" --value "${X_PROXY_SCHEME}" "${JIRA_INSTALL}/conf/server.xml"
-  fi
-  if [ "${X_PROXY_SCHEME}" = "https" ]; then
-    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "secure" --value "true" "${JIRA_INSTALL}/conf/server.xml"
-    xmlstarlet ed -P -S -L --update '//Connector[@port="8080"]/@redirectPort' --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
-  fi
-  if [ -n "${X_PATH}" ]; then
-    xmlstarlet ed -P -S -L --update '//Context/@path' --value "${X_PATH}" "${JIRA_INSTALL}/conf/server.xml"
-  fi
 
   if [ -n "${JIRA_CA_P12}" ]; then
     echo "${JIRA_CA_P12}" > "${JIRA_INSTALL}/conf/JIRA.p12.b64"
@@ -61,6 +45,26 @@ if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
 
     rm "${JIRA_INSTALL}/conf/JIRA.p12"
   fi
+
+
+  if [ -n "${X_PROXY_NAME}" ]; then
+    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyName" --value "${X_PROXY_NAME}" "${JIRA_INSTALL}/conf/server.xml"
+  fi
+  if [ -n "${X_PROXY_PORT}" ]; then
+    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyPort" --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
+  fi
+  if [ -n "${X_PROXY_SCHEME}" ]; then
+    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "scheme" --value "${X_PROXY_SCHEME}" "${JIRA_INSTALL}/conf/server.xml"
+  fi
+  if [ "${X_PROXY_SCHEME}" = "https" ]; then
+    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "secure" --value "true" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -P -S -L --update '//Connector[@port="8080"]/@redirectPort' --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
+  fi
+  if [ -n "${X_PATH}" ]; then
+    xmlstarlet ed -P -S -L --update '//Context/@path' --value "${X_PATH}" "${JIRA_INSTALL}/conf/server.xml"
+  fi
+
+
 fi
 
 if [ "${JVM_MINIMUM_MEMORY}" != "2G" ]; then
