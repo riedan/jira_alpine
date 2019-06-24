@@ -4,22 +4,6 @@
 # Docker image. If the file has been changed the entrypoint script will not
 # perform modifications to the configuration file.
 if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
-  if [ -n "${X_PROXY_NAME}" ]; then
-    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyName" --value "${X_PROXY_NAME}" "${JIRA_INSTALL}/conf/server.xml"
-  fi
-  if [ -n "${X_PROXY_PORT}" ]; then
-    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyPort" --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
-  fi
-  if [ -n "${X_PROXY_SCHEME}" ]; then
-    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "scheme" --value "${X_PROXY_SCHEME}" "${JIRA_INSTALL}/conf/server.xml"
-  fi
-  if [ "${X_PROXY_SCHEME}" = "https" ]; then
-    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "secure" --value "true" "${JIRA_INSTALL}/conf/server.xml"
-    xmlstarlet ed -P -S -L --update '//Connector[@port="8080"]/@redirectPort' --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
-  fi
-  if [ -n "${X_PATH}" ]; then
-    xmlstarlet ed -P -S -L --update '//Context/@path' --value "${X_PATH}" "${JIRA_INSTALL}/conf/server.xml"
-  fi
 
   if [ -n "${JIRA_CA_P12}" ]; then
     echo "${JIRA_CA_P12}" > "${JIRA_INSTALL}/conf/JIRA.p12.b64"
@@ -28,8 +12,8 @@ if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
     JKPASS=$(date +%s | sha256sum | base64 | head -c 32)
     echo $JKPASS > "${JIRA_INSTALL}/conf/jvpass"
 
-	cp "${JIRA_INSTALL}/conf/server.xml" "${JIRA_INSTALL}/conf/server.xml.backup"
-	cp "${JIRA_INSTALL}/conf/server.xml.ssl" "${JIRA_INSTALL}/conf/server.xml"
+    cp "${JIRA_INSTALL}/conf/server.xml" "${JIRA_INSTALL}/conf/server.xml.backup"
+    cp "${JIRA_INSTALL}/conf/server.xml.ssl" "${JIRA_INSTALL}/conf/server.xml"
 	
 	
     ${JAVA_HOME}/bin/keytool -importkeystore -srckeystore "${JIRA_INSTALL}/conf/JIRA.p12" -srcstoretype pkcs12 -srcalias "${JIRA_P12_ALIAS}" -srcstorepass "$JIRA_P12_ST_PASS" -destkeystore "${JIRA_INSTALL}/conf/tomcat-keystore.jks" -deststoretype jks -deststorepass "$JKPASS" -destkeypass "$JKPASS" -destalias host_identity
@@ -38,8 +22,8 @@ if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
     chown ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/conf/jvpass"
     chmod 700 "${JIRA_INSTALL}/conf/jvpass"
 
-	sed -i "s|pathKeystoreFile|${JIRA_INSTALL}/conf/tomcat-keystore.jks|g" "${JIRA_INSTALL}/conf/server.xml"
-	sed -i "s/changeit/$JKPASS/g" "${JIRA_INSTALL}/conf/server.xml"
+    sed -i "s|pathKeystoreFile|${JIRA_INSTALL}/conf/tomcat-keystore.jks|g" "${JIRA_INSTALL}/conf/server.xml"
+    sed -i "s/changeit/$JKPASS/g" "${JIRA_INSTALL}/conf/server.xml"
 
     xmlstarlet ed -P -S -L -N x="http://java.sun.com/xml/ns/javaee" -s "/x:web-app" -t elem -n "security-constraintTMP" -v "" \
         -s "/x:web-app/security-constraintTMP" -t elem -n "web-resource-collectionTMP" -v "" \
@@ -61,6 +45,27 @@ if [ "$(stat -c "%Y" "${JIRA_INSTALL}/conf/server.xml")" -eq "0" ]; then
 
     rm "${JIRA_INSTALL}/conf/JIRA.p12"
   fi
+
+
+  if [ -n "${X_PROXY_NAME}" ]; then
+    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyName" --value "${X_PROXY_NAME}" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -P -S -L --insert '//Connector[@port="8443"]' --type "attr" --name "proxyName" --value "${X_PROXY_NAME}" "${JIRA_INSTALL}/conf/server.xml"
+  fi
+  if [ -n "${X_PROXY_PORT}" ]; then
+    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "proxyPort" --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
+    xmlstarlet ed -P -S -L --insert '//Connector[@port="8443"]' --type "attr" --name "proxyPort" --value "${X_PROXY_PORT}" "${JIRA_INSTALL}/conf/server.xml"
+  fi
+  if [ -n "${X_PROXY_SCHEME}" ]; then
+    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "scheme" --value "${X_PROXY_SCHEME}" "${JIRA_INSTALL}/conf/server.xml"
+  fi
+  if [ "${X_PROXY_SCHEME}" = "https" ]; then
+    xmlstarlet ed -P -S -L --insert '//Connector[@port="8080"]' --type "attr" --name "secure" --value "true" "${JIRA_INSTALL}/conf/server.xml"
+  fi
+  if [ -n "${X_PATH}" ]; then
+    xmlstarlet ed -P -S -L --update '//Context/@path' --value "${X_PATH}" "${JIRA_INSTALL}/conf/server.xml"
+  fi
+
+
 fi
 
 if [ "${JVM_MINIMUM_MEMORY}" != "2G" ]; then
