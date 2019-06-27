@@ -103,7 +103,7 @@
               maxThreads="150" minSpareThreads="25"
               enableLookups="false" disableUploadTimeout="true"
               acceptCount="100" scheme="https" secure="true"
-              sslEnabledProtocols="TLSv1,TLSv1.1,TLSv1.2,TLSv1.3"
+              sslEnabledProtocols="TLSv1.2,TLSv1.3"
               clientAuth="false" useBodyEncodingForURI="true"
               keystoreFile="pathKeystoreFile"
               keystorePass="changeit" keystoreType="JKS"/>           
