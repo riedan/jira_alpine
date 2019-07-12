@@ -1,4 +1,4 @@
-FROM openjdk:8-alpine
+FROM adoptopenjdk/openjdk11:alpine
 
 # Configuration variables.
 ENV JIRA_HOME     /var/atlassian/jira
@@ -26,7 +26,7 @@ RUN set -x \
     && mkdir -p                				"${JIRA_HOME}" \
     && mkdir -p                				"${JIRA_HOME}/caches/indexes" \
     && chmod -R 700            				"${JIRA_HOME}" \
-    && chown -R ${JIRA_USER}:${JIRA_GROUP}  "${JIRA_HOME}" \
+    && chown -Rf ${JIRA_USER}:${JIRA_GROUP}  "${JIRA_HOME}" \
     && mkdir -p                				"${JIRA_INSTALL}/conf/Catalina" \
     && curl -Ls                				"https://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-software-${JIRA_VERSION}.tar.gz" | tar -xz --directory "${JIRA_INSTALL}" --strip-components=1 --no-same-owner \
 	  && rm -f                   				"${JIRA_INSTALL}/lib/postgresql-9.1-903.jdbc4-atlassian-hosted.jar" \
