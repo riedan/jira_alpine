@@ -1,8 +1,4 @@
-FROM alpine
-
-ENV JAVA_HOME /opt/java
-ENV PATH $JAVA_HOME/bin:$PATH
-
+FROM openjdk:8-alpine
 
 # Configuration variables.
 ENV JIRA_HOME     /var/atlassian/jira
@@ -18,10 +14,6 @@ ENV JIRA_SESSION_TIMEOUT 60
 ENV JIRA_SSL_PROTOCOL TLS
 ENV JIRA_SSL_ENABLE_PROTOCOLS true
 
-ENV JAVA_VERSION 8
-
-ENV JAVA_URL https://javadl.oracle.com/webapps/download/AutoDL?BundleId=238719_478a62b7d4e34b78b671c754eaaf38ab
-
 #create user if not exist
 RUN set -eux; \
 	getent group ${JIRA_GROUP} || addgroup -S ${JIRA_GROUP}; \
@@ -31,12 +23,6 @@ RUN set -eux; \
 # directory structure.
 RUN set -x \
     && apk add --no-cache curl xmlstarlet bash ttf-dejavu libc6-compat dos2unix tomcat-native \
-    && mkdir -p                				"${JAVA_HOME}" \
-    && curl -Ls                				"$JAVA_URL" | tar -xz --directory "${JAVA_HOME}" --strip-components=1 --no-same-owner \
-    && java --version \
-    && javac --version
-
-RUN set -x \
     && mkdir -p                				"${JIRA_HOME}" \
     && mkdir -p                				"${JIRA_HOME}/caches/indexes" \
     && chmod -R 700            				"${JIRA_HOME}" \
