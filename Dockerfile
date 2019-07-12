@@ -33,7 +33,7 @@ RUN set -x \
     && apk add --no-cache curl xmlstarlet bash ttf-dejavu libc6-compat dos2unix tomcat-native \
     && mkdir -p                				"${JAVA_HOME}" \
     && curl -Ls                				"$JAVA_URL" | tar -xz --directory "${JAVA_HOME}" --strip-components=1 --no-same-owner \
-    && java --version; \
+    && java --version \
     && javac --version
 
 RUN set -x \
