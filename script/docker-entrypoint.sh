@@ -1,5 +1,6 @@
 #!/bin/bash
 
+update-ca-certificates
 
 getent group ${JIRA_GROUP} || addgroup -S ${JIRA_GROUP}
 getent passwd ${JIRA_USER} || adduser -S ${JIRA_USER}  -G ${JIRA_GROUP} -s "/bin/sh"
