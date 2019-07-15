@@ -1,6 +1,10 @@
 #!/bin/bash
 
-update-ca-certificates
+if [  -z "$(ls -A /certs/)" ]; then
+  cp /certs/* /usr/local/share/ca-certificates/.
+  update-ca-certificates
+fi
+
 
 getent group ${JIRA_GROUP} || addgroup -S ${JIRA_GROUP}
 getent passwd ${JIRA_USER} || adduser -S ${JIRA_USER}  -G ${JIRA_GROUP} -s "/bin/sh"
