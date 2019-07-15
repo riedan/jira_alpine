@@ -1,5 +1,13 @@
 #!/bin/bash
 
+
+getent group ${JIRA_GROUP} || addgroup -S ${JIRA_GROUP}
+getent passwd ${JIRA_USER} || adduser -S ${JIRA_USER}  -G ${JIRA_GROUP} -s "/bin/sh"
+
+homedir=$( getent passwd "${JIRA_USER}" | cut -d: -f6 )
+
+mkdir -p ${homedir}
+
 # check if the `server.xml` file has been changed since the creation of this
 # Docker image. If the file has been changed the entrypoint script will not
 # perform modifications to the configuration file.
