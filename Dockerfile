@@ -31,14 +31,14 @@ RUN set -x \
     && curl -Ls                				"https://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-software-${JIRA_VERSION}.tar.gz" | tar -xz --directory "${JIRA_INSTALL}" --strip-components=1 --no-same-owner \
 	  && rm -f                   				"${JIRA_INSTALL}/lib/postgresql-9.1-903.jdbc4-atlassian-hosted.jar" \
     && curl -Ls                				"https://jdbc.postgresql.org/download/postgresql-42.2.5.jar" -o "${JIRA_INSTALL}/lib/postgresql-42.2.5.jar" \
-    && chmod -R 700            				"${JIRA_INSTALL}/conf" \
-    && chmod -R 700            				"${JIRA_INSTALL}/logs" \
-    && chmod -R 700            				"${JIRA_INSTALL}/temp" \
-    && chmod -R 700            				"${JIRA_INSTALL}/work" \
-    && chown -R ${JIRA_USER}:${JIRA_GROUP}	"${JIRA_INSTALL}/conf" \
-    && chown -R ${JIRA_USER}:${JIRA_GROUP}	"${JIRA_INSTALL}/logs" \
-    && chown -R ${JIRA_USER}:${JIRA_GROUP}	"${JIRA_INSTALL}/temp" \
-    && chown -R ${JIRA_USER}:${JIRA_GROUP}	"${JIRA_INSTALL}/work" \
+    && chmod -Rf 700            				"${JIRA_INSTALL}/conf" \
+    && chmod -Rf 700            				"${JIRA_INSTALL}/logs" \
+    && chmod -Rf 700            				"${JIRA_INSTALL}/temp" \
+    && chmod -Rf 700            				"${JIRA_INSTALL}/work" \
+    && chown -Rf ${JIRA_USER}:${JIRA_GROUP}	"${JIRA_INSTALL}/conf" \
+    && chown -Rf ${JIRA_USER}:${JIRA_GROUP}	"${JIRA_INSTALL}/logs" \
+    && chown -Rf ${JIRA_USER}:${JIRA_GROUP}	"${JIRA_INSTALL}/temp" \
+    && chown -Rf ${JIRA_USER}:${JIRA_GROUP}	"${JIRA_INSTALL}/work" \
     && sed --in-place          				"s/java version/openjdk version/g" "${JIRA_INSTALL}/bin/check-java.sh" \
     && echo -e                 				"\njira.home=$JIRA_HOME" >> "${JIRA_INSTALL}/atlassian-jira/WEB-INF/classes/jira-application.properties" \
     && touch -d "@0"           				"${JIRA_INSTALL}/conf/server.xml" \
