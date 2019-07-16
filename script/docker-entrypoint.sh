@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [  "$(ls -A /certs/)" ]; then
-  cp /certs/.* /usr/local/share/ca-certificates/
+  cp /certs/* /usr/local/share/ca-certificates/
   update-ca-certificates
 fi
 
