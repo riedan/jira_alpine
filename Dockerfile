@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:alpine-slim
+FROM alpine
 
 # Configuration variables.
 ENV JIRA_HOME     /var/atlassian/jira
@@ -22,7 +22,7 @@ RUN set -eux; \
 # Install Atlassian JIRA and helper tools and setup initial home
 # directory structure.
 RUN set -x \
-    && apk add --no-cache curl xmlstarlet bash ttf-dejavu dos2unix tomcat-native \
+    && apk add --no-cache  openjdk11 curl xmlstarlet bash ttf-dejavu dos2unix tomcat-native \
     && mkdir -p                				"${JIRA_HOME}" \
     && mkdir -p                				"${JIRA_HOME}/caches/indexes" \
     && chmod -R 700            				"${JIRA_HOME}" \
