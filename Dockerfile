@@ -44,8 +44,7 @@ RUN set -x \
     && touch -d "@0"           				"${JIRA_INSTALL}/conf/server.xml" \
     && sed -i								          "s/<session-timeout>.*<\/session-timeout>/<session-timeout>${JIRA_SESSION_TIMEOUT}<\/session-timeout>/g" "${JIRA_INSTALL}/atlassian-jira/WEB-INF/web.xml" \
 	  && sed -i 								        "s/JVM_MINIMUM_MEMORY=.*$/JVM_MINIMUM_MEMORY=${JVM_MINIMUM_MEMORY}/g" "${JIRA_INSTALL}/bin/setenv.sh" \
-	  && sed -i 								        "s/JVM_MAXIMUM_MEMORY=.*$/JVM_MAXIMUM_MEMORY=${JVM_MAXIMUM_MEMORY}/g" "${JIRA_INSTALL}/bin/setenv.sh" \
-    && sed -i                         "1iJAVA_HOME=${JAVA_HOME}\n" "${JIRA_INSTALL}/bin/setenv.sh"
+	  && sed -i 								        "s/JVM_MAXIMUM_MEMORY=.*$/JVM_MAXIMUM_MEMORY=${JVM_MAXIMUM_MEMORY}/g" "${JIRA_INSTALL}/bin/setenv.sh"
 
 # Expose default HTTP connector port.
 EXPOSE 8080
