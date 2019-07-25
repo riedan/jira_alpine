@@ -3,7 +3,7 @@ FROM adoptopenjdk/openjdk11-openj9:alpine
 # Configuration variables.
 ENV JIRA_HOME     /var/atlassian/jira
 ENV JIRA_INSTALL  /opt/atlassian/jira
-ENV JIRA_VERSION  8.2.3
+ENV JIRA_VERSION  8.3.0
 
 ENV JIRA_USER jira
 ENV JIRA_GROUP jira
@@ -22,7 +22,7 @@ RUN set -eux; \
 # Install Atlassian JIRA and helper tools and setup initial home
 # directory structure.
 RUN set -x \
-    && apk add --no-cache curl xmlstarlet bash ttf-dejavu dos2unix tomcat-native \
+    && apk add --no-cache curl xmlstarlet bash ttf-dejavu dos2unix tomcat-native inotify-tools \
     && mkdir -p                				"${JIRA_HOME}" \
     && mkdir -p                				"${JIRA_HOME}/caches/indexes" \
     && chmod -R 700            				"${JIRA_HOME}" \
