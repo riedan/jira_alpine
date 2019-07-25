@@ -29,7 +29,7 @@ RUN set -x \
     && chown -Rf ${JIRA_USER}:${JIRA_GROUP}  "${JIRA_HOME}" \
     && mkdir -p                				"${JIRA_INSTALL}/conf/Catalina" \
     && curl -Ls                				"https://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-software-${JIRA_VERSION}.tar.gz" | tar -xz --directory "${JIRA_INSTALL}" --strip-components=1 --no-same-owner \
-	  && rm -f                   				"${JIRA_INSTALL}/lib/postgresql-*.jar" \
+	  && rm -f                   				"${JIRA_INSTALL}/lib/postgresql-9.4.1212.jar" \
     && curl -Ls                				"https://jdbc.postgresql.org/download/postgresql-42.2.6.jar" -o "${JIRA_INSTALL}/lib/postgresql-42.2.6.jar" \
     && chmod -Rf 700            				"${JIRA_INSTALL}/conf" \
     && chmod -Rf 700            				"${JIRA_INSTALL}/logs" \
