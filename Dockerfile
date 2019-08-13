@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:alpine
+FROM adoptopenjdk/openjdk8:alpine
 
 # Configuration variables.
 ENV JIRA_HOME     /var/atlassian/jira
@@ -22,15 +22,15 @@ RUN set -eux; \
 # Install Atlassian JIRA and helper tools and setup initial home
 # directory structure.
 RUN set -x \
-    && apk add --no-cache  openjdk11 curl xmlstarlet bash ttf-dejavu dos2unix tomcat-native \
+    && apk add --no-cache curl xmlstarlet bash ttf-dejavu dos2unix tomcat-native \
     && mkdir -p                				"${JIRA_HOME}" \
     && mkdir -p                				"${JIRA_HOME}/caches/indexes" \
     && chmod -R 700            				"${JIRA_HOME}" \
     && chown -Rf ${JIRA_USER}:${JIRA_GROUP}  "${JIRA_HOME}" \
     && mkdir -p                				"${JIRA_INSTALL}/conf/Catalina" \
     && curl -Ls                				"https://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-software-${JIRA_VERSION}.tar.gz" | tar -xz --directory "${JIRA_INSTALL}" --strip-components=1 --no-same-owner \
-	  && rm -f                   				"${JIRA_INSTALL}/lib/postgresql-*.jar" \
-    && curl -Ls                				"https://jdbc.postgresql.org/download/postgresql-42.2.5.jar" -o "${JIRA_INSTALL}/lib/postgresql-42.2.5.jar" \
+	  && rm -f                   				"${JIRA_INSTALL}/lib/postgresql-9.4.1212.jar" \
+    && curl -Ls                				"https://jdbc.postgresql.org/download/postgresql-42.2.6.jar" -o "${JIRA_INSTALL}/lib/postgresql-42.2.6.jar" \
     && chmod -Rf 700            				"${JIRA_INSTALL}/conf" \
     && chmod -Rf 700            				"${JIRA_INSTALL}/logs" \
     && chmod -Rf 700            				"${JIRA_INSTALL}/temp" \

@@ -4,14 +4,15 @@
   <name>jira_database</name>
   <delegator-name>default</delegator-name>
   <database-type>postgres72</database-type>
-  <schema-name>public</schema-name>
+  <schema-name>jiraschema</schema-name>
   <jdbc-datasource>
-    <url>jdbc:postgresql://jiradburl:jiradbport/jiradbschema</url>
+    <url>jdbc:postgresql://jiradburl:jiradbport/jiradbname</url>
     <driver-class>org.postgresql.Driver</driver-class>
     <username>jiradbuser</username>
     <password>jiradbpassword</password>
     <pool-min-size>20</pool-min-size>
-    <pool-max-size>20</pool-max-size>
+    <pool-max-size>100</pool-max-size>
+
     <pool-max-wait>30000</pool-max-wait>
     <pool-max-idle>20</pool-max-idle>
     <pool-remove-abandoned>true</pool-remove-abandoned>
@@ -22,7 +23,7 @@
     <time-between-eviction-runs-millis>300000</time-between-eviction-runs-millis>
   
     <pool-test-on-borrow>false</pool-test-on-borrow>
-	<pool-test-while-idle>true</pool-test-while-idle>
+    <pool-test-while-idle>true</pool-test-while-idle>
 
   </jdbc-datasource>
 </jira-database-config>
