@@ -4,9 +4,9 @@
   <name>jira_database</name>
   <delegator-name>default</delegator-name>
   <database-type>postgres72</database-type>
-  <schema-name>public</schema-name>
+  <schema-name>jiraschema</schema-name>
   <jdbc-datasource>
-    <url>jdbc:postgresql://jiradburl:jiradbport/jiradbschema</url>
+    <url>jdbc:postgresql://jiradburl:jiradbport/jiradbname</url>
     <driver-class>org.postgresql.Driver</driver-class>
     <username>jiradbuser</username>
     <password>jiradbpassword</password>

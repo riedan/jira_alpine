@@ -111,9 +111,11 @@ if [ -n "${JIRA_DB_USERNAME}" -a -n "${JIRA_DB_PASSWORD}" ]; then
 	cp "${JIRA_INSTALL}/dbconfig.xml"  "${JIRA_HOME}/dbconfig.xml"
 	chmod 600 "${JIRA_HOME}/dbconfig.xml"
 	chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/dbconfig.xml"
+	xmlstarlet ed -L -u '/jira-database-config/schema-name' -v "${JIRA_DB_SCHEMA}" "${JIRA_HOME}/dbconfig.xml"
 	xmlstarlet ed -L -u '/jira-database-config/jdbc-datasource/username' -v "${JIRA_DB_USERNAME}" "${JIRA_HOME}/dbconfig.xml"
 	xmlstarlet ed -L -u '/jira-database-config/jdbc-datasource/password' -v "${JIRA_DB_PASSWORD}" "${JIRA_HOME}/dbconfig.xml"
 	xmlstarlet ed -L -u '/jira-database-config/jdbc-datasource/url' -v "jdbc:postgresql://${JIRA_DB_HOSTNAME}:${JIRA_DB_PORT}/${JIRA_DB_SCHEMA}" "${JIRA_HOME}/dbconfig.xml"
+
 fi
 
 
