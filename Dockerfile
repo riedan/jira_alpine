@@ -3,7 +3,7 @@ FROM adoptopenjdk/openjdk8:alpine
 # Configuration variables.
 ENV JIRA_HOME     /var/atlassian/jira
 ENV JIRA_INSTALL  /opt/atlassian/jira
-ENV JIRA_VERSION  8.3.0
+ENV JIRA_VERSION  8.2.3
 
 ENV JIRA_USER jira
 ENV JIRA_GROUP jira
