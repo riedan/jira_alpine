@@ -11,7 +11,7 @@
     <username>jiradbuser</username>
     <password>jiradbpassword</password>
     <pool-min-size>20</pool-min-size>
-    <pool-max-size>20</pool-max-size>
+    <pool-max-size>30</pool-max-size>
     <pool-max-wait>30000</pool-max-wait>
     <pool-max-idle>20</pool-max-idle>
     <pool-remove-abandoned>true</pool-remove-abandoned>
