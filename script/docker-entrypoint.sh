@@ -93,9 +93,6 @@ fi
 if [ ${JIRA_USER} != "jira" ]; then
   getent group ${JIRA_GROUP} || addgroup -S ${JIRA_GROUP}
   getent passwd ${JIRA_USER} || adduser -S ${JIRA_USER}  -G ${JIRA_GROUP} -s "/bin/bash" -h "${JIRA_HOME}"
-  mkdir -p "${JIRA_HOME}"
-  mkdir -p "${JIRA_HOME}/caches/indexes"
-  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}" || true
   chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/conf"
   chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/logs"
   chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/temp"
