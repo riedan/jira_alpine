@@ -95,7 +95,7 @@ if [ ${JIRA_USER} != "jira" ]; then
   getent passwd ${JIRA_USER} || adduser -S ${JIRA_USER}  -G ${JIRA_GROUP} -s "/bin/bash" -h "${JIRA_HOME}"
   mkdir -p "${JIRA_HOME}"
   mkdir -p "${JIRA_HOME}/caches/indexes"
-
+  chown -f ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}" || true
 
   if [ ! -f "${JIRA_HOME}/dbconfig.xml" ]; then
 
