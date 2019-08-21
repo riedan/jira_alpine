@@ -109,6 +109,8 @@ if [ ${JIRA_USER} != "jira" ]; then
        chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/plugins" || true
        chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/tmp" || true
        chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/avatars" || true
+       chown -f ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/attachments" || true
+
         if [ -z "$(ls -A -- "${JIRA_HOME}/data/attachments")" ]; then
 
           chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/attachments" || true
