@@ -110,17 +110,13 @@ if [ ${JIRA_USER} != "jira" ]; then
        chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/tmp" || true
        chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/avatars" || true
        chown -f ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/attachments" || true
-
+       
         if [ -z "$(ls -A -- "${JIRA_HOME}/data/attachments")" ]; then
 
           chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/attachments" || true
         fi
   fi
 
-  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/conf"
-  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/logs"
-  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/temp"
-  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/work"
 fi
 
 if [ "${JIRA_SESSION_TIMEOUT}" -ne 60 ]; then
