@@ -96,6 +96,12 @@ if [ ${JIRA_USER} != "jira" ]; then
   mkdir -p "${JIRA_HOME}"
   mkdir -p "${JIRA_HOME}/caches/indexes"
   chown -f ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}" || true
+  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/conf"
+  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/logs"
+  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/temp"
+  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/work"
+
+
 
   if [ ! -f "${JIRA_HOME}/dbconfig.xml" ]; then
 
