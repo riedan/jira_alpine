@@ -106,9 +106,9 @@ if [ ${JIRA_USER} != "jira" ]; then
   chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/import" || true
   chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/caches" || true
   chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/tmp" || true
-  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data" || true
   chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/avatars" || true
   chown -f ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/attachments" || true
+  chown -f ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data" || true
 
   if [ ! -f "${JIRA_HOME}/dbconfig.xml" ]; then
 
