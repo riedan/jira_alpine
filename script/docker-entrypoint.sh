@@ -106,7 +106,7 @@ if [ ${JIRA_USER} != "jira" ]; then
   chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/import" || true
   chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/caches" || true
   chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/tmp" || true
-  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/avatars" || true
+  chown -f ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/avatars" || true
   chown -f ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/attachments" || true
   chown -f ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data" || true
 
@@ -117,7 +117,7 @@ if [ ${JIRA_USER} != "jira" ]; then
        chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/monitor" || true
        
         if [ -z "$(ls -A -- "${JIRA_HOME}/data/attachments")" ]; then
-
+	  chown -rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/avatars"
           chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/attachments" || true
         fi
   fi
