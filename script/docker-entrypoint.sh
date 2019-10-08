@@ -90,6 +90,10 @@ if [ "${JVM_MAXIMUM_MEMORY}" != "10G" ]; then
   sed -i "s/JVM_MAXIMUM_MEMORY=.*$/JVM_MAXIMUM_MEMORY=${JVM_MAXIMUM_MEMORY}/g" "${JIRA_INSTALL}/bin/setenv.sh" 
 fi 
 
+if [ -n "${JVM_SUPPORT_RECOMMENDED_ARGS}" ]; then
+  sed -i "s/JVM_SUPPORT_RECOMMENDED_ARGS=.*$/JVM_SUPPORT_RECOMMENDED_ARGS=${JVM_SUPPORT_RECOMMENDED_ARGS}/g" "${JIRA_INSTALL}/bin/setenv.sh" 
+fi 
+
 if [ ${JIRA_USER} != "jira" ]; then
   getent group ${JIRA_GROUP} || addgroup -S ${JIRA_GROUP}
   getent passwd ${JIRA_USER} || adduser -S ${JIRA_USER}  -G ${JIRA_GROUP} -s "/bin/bash" -h "${JIRA_HOME}"
