@@ -32,6 +32,22 @@ if SSL_ENABLED == 'True' or SSL_ENABLED == True or SSL_ENABLED == 'true' :
 
     activate_ssl( f'{JIRA_INSTALL_DIR}/confluence/WEB-INF/web.xml', PATH_KEYSTORE, PASSWORD_KEYSTORE, PATH_CERTIFICATE_KEY, PATH_CERTIFICATE, PATH_CA, PASSWORD_P12, PATH_P12)
 
+set_ownership(f'{JIRA_INSTALL_DIR}/conf',  user=RUN_USER, group=RUN_GROUP)
+set_ownership(f'{JIRA_INSTALL_DIR}/logs',  user=RUN_USER, group=RUN_GROUP)
+set_ownership(f'{JIRA_INSTALL_DIR}/temp',  user=RUN_USER, group=RUN_GROUP)
+set_ownership(f'{JIRA_INSTALL_DIR}/work',  user=RUN_USER, group=RUN_GROUP)
+
+
+set_ownership(f'{JIRA_HOME}/import',  user=RUN_USER, group=RUN_GROUP)
+set_ownership(f'{JIRA_HOME}/export',  user=RUN_USER, group=RUN_GROUP)
+set_ownership(f'{JIRA_HOME}/log',  user=RUN_USER, group=RUN_GROUP)
+set_ownership(f'{JIRA_HOME}/plugins',  user=RUN_USER, group=RUN_GROUP)
+set_ownership(f'{JIRA_HOME}/caches',  user=RUN_USER, group=RUN_GROUP)
+set_ownership(f'{JIRA_HOME}/data/avatars',  user=RUN_USER, group=RUN_GROUP)
+
+shutil.chown(JIRA_HOME, user=RUN_USER, group=RUN_GROUP)
+shutil.chown(f'{JIRA_HOME}/data/attachments', user=RUN_USER, group=RUN_GROUP)
+shutil.chown(f'{JIRA_HOME}/data', user=RUN_USER, group=RUN_GROUP)
 
 gen_cfg('server.xml.j2', f'{JIRA_INSTALL_DIR}/conf/server.xml')
 
