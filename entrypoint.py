@@ -28,9 +28,9 @@ if SSL_ENABLED == 'True' or SSL_ENABLED == True or SSL_ENABLED == 'true' :
     PATH_CA = env.get('atl_ca_location','/opt/atlassian/etc/ca.cert')
 
     PATH_P12= env.get('atl_p12_location', '/opt/atlassian/etc/certificate.p12')
-    PASSWORD_P12 = env.get('atl_p12_password', 'confluence')
+    PASSWORD_P12 = env.get('atl_p12_password', 'jira')
 
-    activate_ssl( f'{JIRA_INSTALL_DIR}/confluence/WEB-INF/web.xml', PATH_KEYSTORE, PASSWORD_KEYSTORE, PATH_CERTIFICATE_KEY, PATH_CERTIFICATE, PATH_CA, PASSWORD_P12, PATH_P12)
+    activate_ssl( f'{JIRA_INSTALL_DIR}/jira/WEB-INF/web.xml', PATH_KEYSTORE, PASSWORD_KEYSTORE, PATH_CERTIFICATE_KEY, PATH_CERTIFICATE, PATH_CA, PASSWORD_P12, PATH_P12)
 
 set_ownership(f'{JIRA_INSTALL_DIR}/conf',  user=RUN_USER, group=RUN_GROUP)
 set_ownership(f'{JIRA_INSTALL_DIR}/logs',  user=RUN_USER, group=RUN_GROUP)

@@ -38,8 +38,8 @@ ARG DOWNLOAD_URL=https://product-downloads.atlassian.com/software/jira/downloads
 
 #create user if not exist
 RUN set -eux; \
-	getent group ${JIRA_GROUP} || addgroup -g ${RUN_GID} -S ${RUN_GROUP}; \
-	getent passwd ${JIRA_USER} || adduser --uid ${RUN_UID}  -S ${RUN_USER}  -G ${RUN_GROUP} -s "/bin/bash";
+	getent group ${RUN_GROUP} || addgroup -g ${RUN_GID} -S ${RUN_GROUP}; \
+	getent passwd ${RUN_USER} || adduser --uid ${RUN_UID}  -S ${RUN_USER}  -G ${RUN_GROUP} -s "/bin/bash";
 
 # Install Atlassian JIRA and helper tools and setup initial home
 # directory structure.
