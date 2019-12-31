@@ -65,3 +65,7 @@ COPY entrypoint.py \
      shared-components/image/entrypoint_helpers.py  /
 COPY shared-components/support                      /opt/atlassian/support
 COPY config/*                                       /opt/atlassian/etc/
+
+
+RUN chmod +x /entrypoint.py
+RUN chmod +x /entrypoint_helpers.py
