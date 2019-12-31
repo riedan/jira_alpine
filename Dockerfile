@@ -21,7 +21,7 @@ EXPOSE 8080
 EXPOSE 8443
 
 CMD ["/entrypoint.py"]
-ENTRYPOINT ["/tini", "--"]
+ENTRYPOINT ["tini", "--"]
 
 
 RUN apk add --no-cache ca-certificates wget curl openssh bash procps openssl perl ttf-dejavu tini python3 py3-jinja2 tzdata tomcat-native
