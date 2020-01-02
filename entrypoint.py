@@ -43,9 +43,9 @@ if SSL_ENABLED == 'True' or SSL_ENABLED == True or SSL_ENABLED == 'true' :
 tree = ET.parse(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml')
 root = tree.getroot()
 
-session_config = root.find('session-config')
-session =  session_config.find('session-timeout')
-session.text = env.get('atl_session_timeout', 600)
+for session_config in  root.findall('session-config'):
+    session =  session_config.find('session-timeout')
+    session.text = env.get('atl_session_timeout', 600)
 
 tree.write(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml')
 
