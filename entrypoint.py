@@ -51,7 +51,7 @@ try:
     shutil.chown(f'{JIRA_HOME}/data/attachments', user=RUN_USER, group=RUN_GROUP)
     shutil.chown(f'{JIRA_HOME}/data', user=RUN_USER, group=RUN_GROUP)
 except:
-    print("Unexpected error:", sys.exc_info()[0])
+    print("Unexpected error:")
 
 gen_cfg('server.xml.j2', f'{JIRA_INSTALL_DIR}/conf/server.xml')
 
