@@ -45,9 +45,12 @@ set_ownership(f'{JIRA_HOME}/plugins',  user=RUN_USER, group=RUN_GROUP)
 set_ownership(f'{JIRA_HOME}/caches',  user=RUN_USER, group=RUN_GROUP)
 set_ownership(f'{JIRA_HOME}/data/avatars',  user=RUN_USER, group=RUN_GROUP)
 
-shutil.chown(JIRA_HOME, user=RUN_USER, group=RUN_GROUP)
-shutil.chown(f'{JIRA_HOME}/data/attachments', user=RUN_USER, group=RUN_GROUP)
-shutil.chown(f'{JIRA_HOME}/data', user=RUN_USER, group=RUN_GROUP)
+try:
+    shutil.chown(JIRA_HOME, user=RUN_USER, group=RUN_GROUP)
+    shutil.chown(f'{JIRA_HOME}/data/attachments', user=RUN_USER, group=RUN_GROUP)
+    shutil.chown(f'{JIRA_HOME}/data', user=RUN_USER, group=RUN_GROUP)
+except:
+    print("Unexpected error:", sys.exc_info()[0])
 
 gen_cfg('server.xml.j2', f'{JIRA_INSTALL_DIR}/conf/server.xml')
 
