@@ -45,7 +45,7 @@ if  os.path.exists(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml'):
 
     for session_config in  root.findall("session-config"):
         session =  session_config.find('session-timeout')
-        session.text = env.get('atl_session_timeout', 300)
+        session.text = env.get('atl_session_timeout', 600)
 
     tree.write(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml')
 
