@@ -12,17 +12,17 @@
 
    {% if atl_db_type is defined %}
         {% set databases =  {
-             "mysql57": ["com.mysql.jdbc.Driver", "jdbc:mysql:"],
-             "mysql": ["com.mysql.jdbc.Driver", "jdbc:mysql:"],
-             "postgres72": ["org.postgresql.Driver", "jdbc:postgresql:"],
-             "mssql": ["com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver:"],
-             "oracle10g": ["oracle.jdbc.OracleDriver", "jdbc:oracle:thin:"]
+             "mysql57": ["com.mysql.jdbc.Driver"],
+             "mysql": ["com.mysql.jdbc.Driver"],
+             "postgres72": ["org.postgresql.Driver"],
+             "mssql": ["com.microsoft.sqlserver.jdbc.SQLServerDriver"],
+             "oracle10g": ["oracle.jdbc.OracleDriver"]
             } %}
 
         <schema-name>{{ atl_db_schema_name | default(schema_names.get(atl_db_type, '')) }}</schema-name>
         <database-type>{{ atl_db_type }}</database-type>
         <jdbc-datasource>
-          <url>{{ databases[atl_db_type][1] }}{{ atl_jdbc_url }}</url>
+          <url>{{ atl_jdbc_url }}</url>
           <username>{{ atl_jdbc_user }}</username>
           <password>{{ atl_jdbc_password }}</password>
           <driver-class>{{ databases[atl_db_type][0] }}</driver-class>

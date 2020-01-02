@@ -46,6 +46,8 @@ RUN set -eux; \
 RUN set -x \
   && mkdir -p                                     ${JIRA_INSTALL_DIR} \
   && curl -L --silent                             ${DOWNLOAD_URL} | tar -xz --strip-components=1 -C "${JIRA_INSTALL_DIR}" \
+  && rm -f                   				"${JIRA_INSTALL}/lib/postgresql-9.4.1212.jar" \
+  && curl -Ls                				"https://jdbc.postgresql.org/download/postgresql-42.2.9.jar" -o "${JIRA_INSTALL}/lib/postgresql-42.2.9.jar" \
   && chmod -R "u=rwX,g=rX,o=rX"                   ${JIRA_INSTALL_DIR}/ \
   && chown -R root.                               ${JIRA_INSTALL_DIR}/ \
   && chown -R ${RUN_USER}:${RUN_GROUP}            ${JIRA_INSTALL_DIR}/logs \

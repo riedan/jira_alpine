@@ -55,8 +55,10 @@
                  SSLEnabled="{{ atl_sslenabled | default('false') }}"
                  SSLCertificateFile="{{ atl_certificate_location | default('/opt/atlassian/etc/certificate.crt') }}"
                  SSLCertificateKeyFile="{{ atl_certificate_key_location | default('/opt/atlassian/etc/certificate.key') }}"
-                 keystorePass="{{ atl_certificate_password | default('changeit') }}"
-                 keystoreFile="{{ atl_certificate_location | default('/opt/atlassian/confluence/keystore') }}"
+                  {% if atl_certificate_password is defined  %}
+                      keystorePass="{{ atl_certificate_password | default('changeit') }}"
+                      keystoreFile="{{ atl_certificate_location | default('/opt/atlassian/confluence/keystore') }}"
+                  {% endif %}
                    />
 
     {% endif %}
