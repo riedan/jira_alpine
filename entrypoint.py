@@ -13,7 +13,11 @@ JIRA_INSTALL_DIR = env['jira_install_dir']
 JIRA_HOME = env['jira_home']
 SSL_ENABLED =  env.get('atl_sslenabled', False)
 
+ET.register_namespace('', "http://java.sun.com/xml/ns/javaee")
+ET.register_namespace('xsi', "http://www.w3.org/2001/XMLSchema-instance")
+
 gen_container_id()
+
 if os.stat('/etc/container_id').st_size == 0:
     gen_cfg('container_id.j2', '/etc/container_id',
             user=RUN_USER, group=RUN_GROUP, overwrite=True)
@@ -36,18 +40,14 @@ if SSL_ENABLED == 'True' or SSL_ENABLED == True or SSL_ENABLED == 'true' :
 
 
 #edit session-timeout in web.xml
+tree = ET.parse(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml')
+root = tree.getroot()
 
-if  os.path.exists(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml'):
-    ET.register_namespace('', "http://java.sun.com/xml/ns/javaee")
-    ET.register_namespace('xsi', "http://www.w3.org/2001/XMLSchema-instance")
-    tree = ET.parse(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml')
-    root = tree.getroot()
+session_config = root.find('session-config')
+session =  session_config.find('session-timeout')
+session.text = env.get('atl_session_timeout', 600)
 
-    for session_config in  root.findall("session-config"):
-        session =  session_config.find('session-timeout')
-        session.text = env.get('atl_session_timeout', 600)
-
-    tree.write(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml')
+tree.write(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml')
 
 
 
