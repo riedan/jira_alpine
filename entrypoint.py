@@ -36,17 +36,17 @@ if SSL_ENABLED == 'True' or SSL_ENABLED == True or SSL_ENABLED == 'true' :
 
 #edit session-timeout in web.xml
 
- if  os.path.exists(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml'):
-        ET.register_namespace('', "http://java.sun.com/xml/ns/javaee")
-        ET.register_namespace('xsi', "http://www.w3.org/2001/XMLSchema-instance")
-        tree = ET.parse(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml')
-        root = tree.getroot()
+if  os.path.exists(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml'):
+    ET.register_namespace('', "http://java.sun.com/xml/ns/javaee")
+    ET.register_namespace('xsi', "http://www.w3.org/2001/XMLSchema-instance")
+    tree = ET.parse(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml')
+    root = tree.getroot()
 
-        for session_config in  root.findall("session-config"):
-            session =  session_config.find('session-timeout')
-            session.text = env.get('atl_session_timeout', 300)
+    for session_config in  root.findall("session-config"):
+        session =  session_config.find('session-timeout')
+        session.text = env.get('atl_session_timeout', 300)
 
-        tree.write(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml')
+    tree.write(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml')
 
 
 
