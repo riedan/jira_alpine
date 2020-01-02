@@ -31,7 +31,25 @@ if SSL_ENABLED == 'True' or SSL_ENABLED == True or SSL_ENABLED == 'true' :
     PATH_P12= env.get('atl_p12_location', '/opt/atlassian/etc/certificate.p12')
     PASSWORD_P12 = env.get('atl_p12_password', 'jira')
 
-    activate_ssl( f'{JIRA_INSTALL_DIR}/jira/WEB-INF/web.xml', PATH_KEYSTORE, PASSWORD_KEYSTORE, PATH_CERTIFICATE_KEY, PATH_CERTIFICATE, PATH_CA, PASSWORD_P12, PATH_P12)
+    activate_ssl( f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml', PATH_KEYSTORE, PASSWORD_KEYSTORE, PATH_CERTIFICATE_KEY, PATH_CERTIFICATE, PATH_CA, PASSWORD_P12, PATH_P12)
+
+
+#edit session-timeout in web.xml
+
+ if  os.path.exists(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml'):
+        ET.register_namespace('', "http://java.sun.com/xml/ns/javaee")
+        ET.register_namespace('xsi', "http://www.w3.org/2001/XMLSchema-instance")
+        tree = ET.parse(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml')
+        root = tree.getroot()
+
+        for session_config in  root.findall("session-config"):
+            session =  session_config.find('session-timeout')
+            session.text = env.get('atl_session_timeout', 300)
+
+        tree.write(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml')
+
+
+
 
 set_ownership(f'{JIRA_INSTALL_DIR}/conf',  user=RUN_USER, group=RUN_GROUP)
 set_ownership(f'{JIRA_INSTALL_DIR}/logs',  user=RUN_USER, group=RUN_GROUP)

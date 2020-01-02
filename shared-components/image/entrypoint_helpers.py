@@ -115,13 +115,6 @@ def activate_ssl(web_path, path_keystore, password_keystore, path_key, path_crt,
 
         tree.write(web_path)
 
-    if os.path.exists(path_crt) and os.path.exists(path_key)  and os.path.exists(path_ca) and not os.path.exists(path_p12):
-        myP12 = call(['openssl', 'pkcs12', '-in', path_crt, '-inkey', path_key, '-CAfile', path_ca, '-name', 'confluence','' "-out", path_p12 , '-password',  'pass:' + password_p12])
-
-    if os.path.exists(path_p12) and not os.path.exists(password_keystore):
-        myKeystore = call(['keytool', '-importkeystore', '-srckeystore' ,  path_p12,'-srcstoretype', 'pkcs12',  '-srcalias', '1', '-srcstorepass', password_p12, ' -destkeystore', path_keystore, '-deststoretype' , 'jks', '-deststorepass', password_keystore, '-destkeypass', password_keystore,  '-destalias', 'host_identity'])
-
-
 ######################################################################
 # Start App as the correct user
 
