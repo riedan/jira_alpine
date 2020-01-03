@@ -3,7 +3,7 @@
 import os
 import shutil
 import sys
-import xml.etree.ElementTree as ET
+from subprocess import call
 from entrypoint_helpers import env, gen_cfg, gen_container_id, str2bool, start_app,  set_perms, set_ownership, activate_ssl
 
 
@@ -12,6 +12,7 @@ RUN_GROUP = env['run_group']
 JIRA_INSTALL_DIR = env['jira_install_dir']
 JIRA_HOME = env['jira_home']
 SSL_ENABLED =  env.get('atl_sslenabled', False)
+JIRA_SESSION_TIMEOUT = env.get('atl_session_timeout', 600)
 
 ET.register_namespace('', "http://java.sun.com/xml/ns/javaee")
 ET.register_namespace('xsi', "http://www.w3.org/2001/XMLSchema-instance")
@@ -40,14 +41,9 @@ if SSL_ENABLED == 'True' or SSL_ENABLED == True or SSL_ENABLED == 'true' :
 
 
 #edit session-timeout in web.xml
-tree = ET.parse(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml')
-root = tree.getroot()
+call(['sed', '-i',  f's/<session-timeout>.*<\/session-timeout>/<session-timeout>{JIRA_SESSION_TIMEOUT}<\/session-timeout>/g', f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml'])
 
-for session_config in  root.findall('session-config'):
-    session =  session_config.find('session-timeout')
-    session.text = env.get('atl_session_timeout', 600)
 
-tree.write(f'{JIRA_INSTALL_DIR}/atlassian-jira/WEB-INF/web.xml')
 
 
 
