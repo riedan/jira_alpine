@@ -14,9 +14,6 @@ JIRA_HOME = env['jira_home']
 SSL_ENABLED =  env.get('atl_sslenabled', False)
 JIRA_SESSION_TIMEOUT = env.get('atl_session_timeout', 600)
 
-ET.register_namespace('', "http://java.sun.com/xml/ns/javaee")
-ET.register_namespace('xsi', "http://www.w3.org/2001/XMLSchema-instance")
-
 gen_container_id()
 
 if os.stat('/etc/container_id').st_size == 0:
