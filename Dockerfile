@@ -12,8 +12,6 @@ ENV RUN_GID                                         2001
 
 ENV ATL_SSLENABLED 'False'
 
-
-
 WORKDIR $JIRA_HOME
 
 # Expose HTTP port
