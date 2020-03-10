@@ -22,7 +22,7 @@ CMD ["/entrypoint.py"]
 ENTRYPOINT ["tini", "--"]
 
 
-RUN apk add --no-cache ca-certificates wget curl openssh bash procps openssl perl ttf-dejavu tini python3 py3-jinja2 tzdata tomcat-native freetype freetype-dev fontconfig
+RUN apk add --no-cache ca-certificates wget curl openssh bash procps openssl perl ttf-dejavu tini python3 py3-jinja2 tzdata tomcat-native freetype freetype-dev fontconfig fontconfig-dev
 
 # Workaround for AdoptOpenJDK Alpine fontconfig bug
 RUN ln -s /usr/lib/libfontconfig.so.1 /usr/lib/libfontconfig.so \
