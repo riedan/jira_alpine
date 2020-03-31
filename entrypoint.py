@@ -44,29 +44,22 @@ call(['sed', '-i',  f's/<session-timeout>.*<\/session-timeout>/<session-timeout>
 
 
 
+try:
+  set_ownership(f'{JIRA_INSTALL_DIR}/conf',  user=RUN_USER, group=RUN_GROUP)
+  set_ownership(f'{JIRA_INSTALL_DIR}/logs',  user=RUN_USER, group=RUN_GROUP)
+  set_ownership(f'{JIRA_INSTALL_DIR}/temp',  user=RUN_USER, group=RUN_GROUP)
+  set_ownership(f'{JIRA_INSTALL_DIR}/work',  user=RUN_USER, group=RUN_GROUP)
+except:
+    print("Unexpected error:")
 
-set_ownership(f'{JIRA_INSTALL_DIR}/conf',  user=RUN_USER, group=RUN_GROUP)
-set_ownership(f'{JIRA_INSTALL_DIR}/logs',  user=RUN_USER, group=RUN_GROUP)
-set_ownership(f'{JIRA_INSTALL_DIR}/temp',  user=RUN_USER, group=RUN_GROUP)
-set_ownership(f'{JIRA_INSTALL_DIR}/work',  user=RUN_USER, group=RUN_GROUP)
 
 try:
-    set_ownership(f'{JIRA_HOME}/import',  user=RUN_USER, group=RUN_GROUP)
-except:
-    print("Unexpected error:")
-
-try:    
-    set_ownership(f'{JIRA_HOME}/export',  user=RUN_USER, group=RUN_GROUP)
-except:
-    print("Unexpected error:")
-
-try:    
-    set_ownership(f'{JIRA_HOME}/log',  user=RUN_USER, group=RUN_GROUP)
-except:
-    print("Unexpected error:")
-
-try:
-    set_ownership(f'{JIRA_HOME}/plugins',  user=RUN_USER, group=RUN_GROUP)
+  set_ownership(f'{JIRA_HOME}/import',  user=RUN_USER, group=RUN_GROUP)
+  set_ownership(f'{JIRA_HOME}/export',  user=RUN_USER, group=RUN_GROUP)
+  set_ownership(f'{JIRA_HOME}/log',  user=RUN_USER, group=RUN_GROUP)
+  set_ownership(f'{JIRA_HOME}/plugins',  user=RUN_USER, group=RUN_GROUP)
+  set_ownership(f'{JIRA_HOME}/caches',  user=RUN_USER, group=RUN_GROUP)
+  set_ownership(f'{JIRA_HOME}/data/avatars',  user=RUN_USER, group=RUN_GROUP)
 except:
     print("Unexpected error:")
 

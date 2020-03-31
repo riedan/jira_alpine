@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk8:alpine
+FROM adoptopenjdk/openjdk11:alpine
 
 # Configuration variables.
 ENV JIRA_HOME     /var/atlassian/jira
@@ -12,8 +12,6 @@ ENV RUN_GID                                         2001
 
 ENV ATL_SSLENABLED 'False'
 
-
-
 WORKDIR $JIRA_HOME
 
 # Expose HTTP port
@@ -24,7 +22,7 @@ CMD ["/entrypoint.py"]
 ENTRYPOINT ["tini", "--"]
 
 
-RUN apk add --no-cache ca-certificates wget curl openssh bash procps openssl perl ttf-dejavu tini python3 py3-jinja2 tzdata tomcat-native
+RUN apk add --no-cache ca-certificates wget curl openssh bash procps openssl perl ttf-dejavu tini python3 py3-jinja2 tzdata tomcat-native fontconfig libxtst  cups-libs
 
 # Workaround for AdoptOpenJDK Alpine fontconfig bug
 RUN ln -s /usr/lib/libfontconfig.so.1 /usr/lib/libfontconfig.so \
