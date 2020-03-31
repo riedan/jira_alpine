@@ -52,6 +52,7 @@ try:
 except:
     print("Unexpected error:")
 
+
 try:
   set_ownership(f'{JIRA_HOME}/import',  user=RUN_USER, group=RUN_GROUP)
   set_ownership(f'{JIRA_HOME}/export',  user=RUN_USER, group=RUN_GROUP)
@@ -63,9 +64,22 @@ except:
     print("Unexpected error:")
 
 try:
+    set_ownership(f'{JIRA_HOME}/caches',  user=RUN_USER, group=RUN_GROUP)
+except:
+    print("Unexpected error:")
+try:
+    set_ownership(f'{JIRA_HOME}/data/avatars',  user=RUN_USER, group=RUN_GROUP)
+except:
+    print("Unexpected error:")    
+
+try:
+    shutil.chown(f'{JIRA_HOME}/data', user=RUN_USER, group=RUN_GROUP)
+except:
+    print("Unexpected error:")        
+    
+try:
     shutil.chown(JIRA_HOME, user=RUN_USER, group=RUN_GROUP)
     shutil.chown(f'{JIRA_HOME}/data/attachments', user=RUN_USER, group=RUN_GROUP)
-    shutil.chown(f'{JIRA_HOME}/data', user=RUN_USER, group=RUN_GROUP)
 except:
     print("Unexpected error:")
 
@@ -73,6 +87,7 @@ gen_cfg('server.xml.j2', f'{JIRA_INSTALL_DIR}/conf/server.xml')
 
 gen_cfg('dbconfig.xml.j2', f'{JIRA_HOME}/dbconfig.xml',
         user=RUN_USER, group=RUN_GROUP, overwrite=False)
+
 if str2bool(env.get('clustered')):
     gen_cfg('cluster.properties.j2', f'{JIRA_HOME}/cluster.properties',
             user=RUN_USER, group=RUN_GROUP, overwrite=False)
