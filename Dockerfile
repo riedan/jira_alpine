@@ -29,7 +29,7 @@ RUN ln -s /lib/libuuid.so.1 /usr/lib/libuuid.so.1 \
     && ln -s /lib/libc.musl-x86_64.so.1 /usr/lib/libc.musl-x86_64.so.1
 ENV LD_LIBRARY_PATH /usr/lib
 
-ARG JIRA_VERSION=8.3.4
+ARG JIRA_VERSION=6.3.15
 ARG DOWNLOAD_URL=https://product-downloads.atlassian.com/software/jira/downloads/atlassian-jira-software-${JIRA_VERSION}.tar.gz
 
 
