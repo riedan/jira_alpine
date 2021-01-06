@@ -29,7 +29,7 @@ RUN ln -s /lib/libuuid.so.1 /usr/lib/libuuid.so.1 \
     && ln -s /lib/libc.musl-x86_64.so.1 /usr/lib/libc.musl-x86_64.so.1
 ENV LD_LIBRARY_PATH /usr/lib
 
-ARG JIRA_VERSION=8.11.0
+ARG JIRA_VERSION=8.13.2
 ARG DOWNLOAD_URL=https://product-downloads.atlassian.com/software/jira/downloads/atlassian-jira-software-${JIRA_VERSION}.tar.gz
 
 
@@ -44,7 +44,7 @@ RUN set -x \
   && mkdir -p                                     ${JIRA_INSTALL_DIR} \
   && curl -L --silent                             ${DOWNLOAD_URL} | tar -xz --strip-components=1 -C "${JIRA_INSTALL_DIR}" \
   && rm -f                   				              "${JIRA_INSTALL_DIR}/lib/postgresql-9.4.1212.jar" \
-  && curl -Ls                				              "https://jdbc.postgresql.org/download/postgresql-42.2.9.jar" -o "${JIRA_INSTALL_DIR}/lib/postgresql-42.2.9.jar" \
+  && curl -Ls                				              "https://jdbc.postgresql.org/download/postgresql-42.2.18.jar" -o "${JIRA_INSTALL_DIR}/lib/postgresql-42.2.18.jar" \
   && chmod -R "u=rwX,g=rX,o=rX"                   ${JIRA_INSTALL_DIR}/ \
   && chown -R root.                               ${JIRA_INSTALL_DIR}/ \
   && chown -R ${RUN_USER}:${RUN_GROUP}            ${JIRA_INSTALL_DIR}/logs \
