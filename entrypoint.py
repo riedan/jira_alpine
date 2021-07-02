@@ -49,6 +49,7 @@ try:
   set_ownership(f'{JIRA_INSTALL_DIR}/logs',  user=RUN_USER, group=RUN_GROUP)
   set_ownership(f'{JIRA_INSTALL_DIR}/temp',  user=RUN_USER, group=RUN_GROUP)
   set_ownership(f'{JIRA_INSTALL_DIR}/work',  user=RUN_USER, group=RUN_GROUP)
+  set_ownership(f'{JIRA_INSTALL_DIR}/bin',  user=RUN_USER, group=RUN_GROUP)
 except:
     print("Unexpected error:")
 
