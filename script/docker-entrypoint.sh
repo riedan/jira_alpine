@@ -90,33 +90,42 @@ if [ "${JVM_MAXIMUM_MEMORY}" != "10G" ]; then
   sed -i "s/JVM_MAXIMUM_MEMORY=.*$/JVM_MAXIMUM_MEMORY=${JVM_MAXIMUM_MEMORY}/g" "${JIRA_INSTALL}/bin/setenv.sh" 
 fi 
 
+if [ -n "${JVM_SUPPORT_RECOMMENDED_ARGS}" ]; then
+  sed -i "s/JVM_SUPPORT_RECOMMENDED_ARGS=.*$/JVM_SUPPORT_RECOMMENDED_ARGS=\"${JVM_SUPPORT_RECOMMENDED_ARGS}\"/g" "${JIRA_INSTALL}/bin/setenv.sh" 
+fi 
+
 if [ ${JIRA_USER} != "jira" ]; then
   getent group ${JIRA_GROUP} || addgroup -S ${JIRA_GROUP}
   getent passwd ${JIRA_USER} || adduser -S ${JIRA_USER}  -G ${JIRA_GROUP} -s "/bin/bash" -h "${JIRA_HOME}"
   mkdir -p "${JIRA_HOME}"
   mkdir -p "${JIRA_HOME}/caches/indexes"
-  
-  if [ ! -f "${JIRA_HOME}/dbconfig.xml" ]; then
-
-       chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/analytics-logs" || true
-       chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/import" || true
-       chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/caches" || true
-       chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/customisations" || true
-       chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/log" || true
-       chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/export" || true
-       chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/monitor" || true
-       chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/plugins" || true
-       chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/tmp" || true
-       chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/avatars" || true
-        if [ -z "$(ls -A -- "${JIRA_HOME}/data/attachments")" ]; then
-
-          chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/attachments" || true
-        fi
-  fi
+  chown -f ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}" || true
   chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/conf"
   chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/logs"
   chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/temp"
   chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_INSTALL}/work"
+  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/export" || true
+  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/log" || true
+  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/plugins" || true
+  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/import" || true
+  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/caches" || true
+  chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/tmp" || true
+  chown -f ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/avatars" || true
+  chown -f ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/attachments" || true
+  chown -f ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data" || true
+
+  if [ ! -f "${JIRA_HOME}/dbconfig.xml" ]; then
+
+       chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/analytics-logs" || true
+       chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/customisations" || true
+       chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/monitor" || true
+       
+        if [ -z "$(ls -A -- "${JIRA_HOME}/data/attachments")" ]; then
+	  chown -rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/avatars"
+          chown -Rf ${JIRA_USER}:${JIRA_GROUP} "${JIRA_HOME}/data/attachments" || true
+        fi
+  fi
+
 fi
 
 if [ "${JIRA_SESSION_TIMEOUT}" -ne 60 ]; then
