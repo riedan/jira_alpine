@@ -118,19 +118,61 @@ def activate_ssl(web_path, path_keystore, password_keystore, path_key, path_crt,
 ######################################################################
 # Start App as the correct user
 
-def start_app(start_cmd, home_dir, name='app'):
-    if os.getuid() == 0:
-        if str2bool(env.get('set_permissions') or True) and check_perms(home_dir, env['run_uid'], env['run_gid'], 0o700) is False:
-            set_perms(home_dir, env['run_user'], env['run_group'], 0o700)
-            logging.info(f"User is currently root. Will change directory ownership and downgrade run user to to {env['run_user']}")
-        else:
-            logging.info(f"User is currently root. Will downgrade run user to to {env['run_user']}")
 
+def check_permissions(home_dir):
+    """Ensure the home directory is set to minimal permissions"""
+    if str2bool(env.get('set_permissions') or True) and check_perms(home_dir, env['run_uid'], env['run_gid'], 0o700) is False:
+        set_perms(home_dir, env['run_user'], env['run_group'], 0o700)
+        logging.info(f"User is currently root. Will change directory ownership and downgrade run user to {env['run_user']}")
+    else:
+        logging.info(f"User is currently root. Will downgrade run user to {env['run_user']}")
+
+def exec_app(start_cmd_v, home_dir, name='app', env_cleanup=False):
+    """Run the supplied application startup command.
+
+    Arguments:
+    start_cmd -- A list of the command and its arguments.
+    home_dir -- Application home directory.
+    name -- (Optional) The name to display in the log message.
+    env_cleanup -- (Default: False) Remove possibly sensitive env-vars.
+    """
+    if os.getuid() == 0:
+        check_permissions(home_dir)
+        cmd = '/bin/su'
+        args = [cmd, env['run_user'], '-c', " ".join(start_cmd_v)]
+    else:
+        cmd = start_cmd_v[0]
+        args = start_cmd_v
+
+    if env_cleanup:
+        unset_secure_vars()
+
+    logging.info(f"Running {name} with command '{cmd}', arguments {args}")
+    os.execv(cmd, args)
+
+
+def start_app(start_cmd, home_dir, name='app', env_cleanup=False):
+    """Run the supplied application startup command.
+
+    DEPRECATED: This function uses a nested shell, which can #
+    interfere with signal handling and clean shutdown.
+
+    Arguments:
+    start_cmd -- A single string with the command and arguments.
+    home_dir -- Application home directory.
+    name -- (Optional) The name to display in the log message.
+    env_cleanup -- (Default: False) Remove possibly sensitive env-vars.
+    """
+    if os.getuid() == 0:
+        check_permissions(home_dir)
         cmd = '/bin/su'
         args = [cmd, env['run_user'], '-c', start_cmd]
     else:
         cmd = '/bin/sh'
         args = [cmd, '-c', start_cmd]
+
+    if env_cleanup:
+        unset_secure_vars()
 
     logging.info(f"Running {name} with command '{cmd}', arguments {args}")
     os.execv(cmd, args)
