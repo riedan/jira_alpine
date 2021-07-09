@@ -115,6 +115,12 @@ def activate_ssl(web_path, path_keystore, password_keystore, path_key, path_crt,
 
         tree.write(web_path)
 
+def unset_secure_vars():
+    secure_keywords = ('PASS', 'SECRET', 'TOKEN')
+    for key in os.environ:
+        if any(kw in key.upper() for kw in secure_keywords):
+            logging.warning(f"Unsetting environment var {key}")
+            del os.environ[key]
 ######################################################################
 # Start App as the correct user
 
