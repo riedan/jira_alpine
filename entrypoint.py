@@ -4,7 +4,7 @@ import os
 import shutil
 import sys
 from subprocess import call
-from entrypoint_helpers import env, gen_cfg, gen_container_id, str2bool, start_app,  set_perms, set_ownership, activate_ssl
+from entrypoint_helpers import env, gen_cfg, gen_container_id, str2bool, start_app,  set_perms, set_ownership, activate_ssl, exec_app
 
 
 RUN_USER = env['run_user']
